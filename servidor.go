@@ -7,7 +7,7 @@ import (
 	"net/rpc"
 )
 type Alumno struct{
-	nameStudent string
+	NombreEstudiante string
 	Materia string
 	Calificacion float64
 }
@@ -17,38 +17,40 @@ type Server struct{
 	Alumnos map[string]map[string]float64
 }
 
-func (this *Server) AgregarA(al Alumno,  answ *string) error {
+func (this *Server) AgregarA(al Alumno,  reply *string) error {
 	
-	if _, ok := this.Alumnos[al.nameStudent]; !ok {//condicion checa si el alumno no existe en la mapa
+	if _, ok := this.Alumnos[al.NombreEstudiante]; !ok {//condicion checa si el alumno no existe en la mapa
 	
 		cali := make(map[string]float64)
 		cali[al.Materia] = al.Calificacion
-		this.Alumnos[al.nameStudent] = cali
-		*answ = "Estudiante guardado"
-			
+		this.Alumnos[al.NombreEstudiante] = cali
+		*reply = "Alumno guardado"
 		
-	}else{//si alumno es registrado por primer vez
-		if _, ok := this.Alumnos[al.nameStudent][al.Materia]; ok { //si existe alguien que con la materia este igual
-			*answ = "Error, El alumno con la materia ya existe"
+	}else{//Setencias por si ocurre una modificacion o añadimiento y/o por si agrega alguien que ya este 
+		if _, ok := this.Alumnos[al.NombreEstudiante][al.Materia]; ok { 
+			*reply = "Error, El alumno con la materia ya existe"
+		} else {
+			this.Alumnos[al.NombreEstudiante][al.Materia] = al.Calificacion 
+			*reply = "Se modifico"
+
 		}
-		*answ = "alumno existe"
 	}	
 	return nil
 }
 
-func (this *Server) CalPA(nameStudent string, answ *float64) error {
+func (this *Server) CalPA(nombre string, reply *float64) error {
 	var promedio float64
 	var suma float64
 
 	
-	for i:= range this.Alumnos[nameStudent]{
-		suma+= this.Alumnos[nameStudent][i]
+	for i:= range this.Alumnos[nombre]{
+		suma+= this.Alumnos[nombre][i]
 	}
-	promedio = suma/float64(len(this.Alumnos[nameStudent]))
-	*answ = promedio
+	promedio = suma/float64(len(this.Alumnos[nombre]))
+	*reply = promedio
 	return nil
 }
-func (this *Server) CalPG( al Alumno,  answ *float64) error {//esta bien
+func (this *Server) CalPG( al Alumno,  reply *float64) error {//esta bien
 	var sumInd float64
 	var sumT float64
 	var promedioT float64
@@ -59,7 +61,7 @@ func (this *Server) CalPG( al Alumno,  answ *float64) error {//esta bien
 		sumInd =0
 		for j:= range this.Alumnos[i]{
 			sumInd+= this.Alumnos[i][j]
-			fmt.Println(sumInd)
+			//fmt.Println(sumInd)
 			
 		}
 		sumT+=sumInd/float64(len(this.Alumnos[i]))
@@ -67,12 +69,12 @@ func (this *Server) CalPG( al Alumno,  answ *float64) error {//esta bien
 
 
 	promedioT= sumT/float64(len(this.Alumnos))
-	fmt.Println(promedioT)
-	*answ =  promedioT
+	//fmt.Println(promedioT)
+	*reply =  promedioT
 	return nil
 }
 
-func (this *Server) CalPM(mat string,  answ *float64) error {//calcular promedio de materia
+func (this *Server) CalPM(mat string,  reply *float64) error {//calcular promedio de materia
 	var sumInd float64
 	var sumT float64
 	var promedioT float64
@@ -91,8 +93,8 @@ func (this *Server) CalPM(mat string,  answ *float64) error {//calcular promedio
 
 
 	promedioT= sumInd/sumT
-	fmt.Println(promedioT)
-	*answ =  promedioT
+	//fmt.Println(promedioT)
+	*reply =  promedioT
 	return nil
 }
 

@@ -5,7 +5,7 @@ import (
 	"net/rpc"
 )
 type Alumno struct{
-	nameStudent string
+	NombreEstudiante string
 	Materia string
 	Calificacion float64
 }
@@ -24,20 +24,20 @@ func client() {
 		fmt.Println("2) Imprimir promedio de Alumno")
 		fmt.Println("3) Imprimir promedio general")
 		fmt.Println("4) Imprimir promedio de una materia")
-		fmt.Println("0) Exit")
+		fmt.Println("5) Salir")
 		fmt.Print("Opcion:")
 		fmt.Scanln(&op)
 
 		switch op {
 		case 1:
 			var result string
-			var nameStudent string
+			var nombre string
 			var materia string
 			var calificacion float64
-			
-			fmt.Print("nameStudent: ")
-			fmt.Scanln(&nameStudent)
-			al.nameStudent = nameStudent
+			fmt.Println("Agregar")
+			fmt.Print("Nombre: ")
+			fmt.Scanln(&nombre)
+			al.NombreEstudiante = nombre
 
 			fmt.Print("Materia: ")
 			fmt.Scanln(&materia)
@@ -55,13 +55,13 @@ func client() {
 				fmt.Println(result)
 			}
 		case 2:
-			var nameStudent string
+			var nombre string
 			var result float64
-
+			fmt.Println("Promedio de Alumno")
 			fmt.Print("Nombre: ")
-			fmt.Scanln(&nameStudent)
+			fmt.Scanln(&nombre)
 
-			err = c.Call("Server.CalPA", nameStudent, &result)
+			err = c.Call("Server.CalPA", nombre, &result)
 			if err != nil {
 				fmt.Println(err)
 			} else {
@@ -70,6 +70,7 @@ func client() {
 			}
 		case 3:
 			var result float64
+			fmt.Println("Promedio General")
 			err = c.Call("Server.CalPG",  al, &result)
 			if err != nil {
 				fmt.Println(err)
@@ -80,6 +81,7 @@ func client() {
 		case 4:
 			var materia string
 			var result float64
+			fmt.Println("Promedio Materia")
 			fmt.Print("Materia: ")
 			fmt.Scanln(&materia)
 
@@ -89,7 +91,7 @@ func client() {
 			} else {
 				fmt.Println(result)
 			}
-		case 0:
+		case 5:
 			return
 		}
 	}
